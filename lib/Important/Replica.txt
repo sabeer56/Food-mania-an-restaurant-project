@@ -1,0 +1,469 @@
+import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
+void main() {
+  runApp(SalesDashboardApp());
+}
+
+class SalesDashboardApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: SalesDashboard(),
+    );
+  }
+}
+
+class SalesDashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60.0), // AppBar height
+        child: AppBar(
+          backgroundColor: Color(0xFF1C023E), // Dark purple background
+          actions: [
+            Row(
+                  children: [
+                    _buildNavButton('stock view'),
+                    SizedBox(width: 10),
+                    _buildNavButton('stock-entry'),
+                    SizedBox(width: 10),
+                    _buildNavButton('sales-report'),
+                  ],
+                ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Text('Log-Out'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red, // Log-out button background color
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          // Top Section (Purple Background)
+          Container(
+            color: Color(0xFF1C023E),
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top Navigation Buttons
+                
+                SizedBox(height: 30),
+                // Sales Info Section
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Today Sales',
+                          style: TextStyle(color: Colors.white, fontSize: 22),
+                        ),
+                        Text(
+                          'Current Inventry Value',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              '400.56',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 26,
+                              ),
+                            ),
+                            Icon(Icons.arrow_upward, color: Colors.red, size: 20),
+                          ],
+                        ),
+                        Text(
+                          '15000',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                // Icon Buttons Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.money, color: Colors.white, size: 40),
+                    Icon(Icons.money, color: Colors.white, size: 40),
+                    Icon(Icons.qr_code, color: Colors.white, size: 40),
+                    Icon(Icons.filter_alt, color: Colors.white, size: 40),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // Bottom Section (Light Cream Background)
+          Expanded(
+            child: Container(
+              color: Color(0xFFFAF6EA), // Light cream background
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text(
+                    'Today Sales',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Expanded(
+                    child: PieChartWidget(), // Pie Chart
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Navigation Button Widget
+  Widget _buildNavButton(String title) {
+    return TextButton(
+      onPressed: () {},
+      child: Text(
+        title,
+        style: TextStyle(color: Colors.white),
+      ),
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.black,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+    );
+  }
+}
+
+// Pie Chart Widget
+class PieChartWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final List<SalesData> chartData = [
+      SalesData('Football', 25, Color(0xFF00BFFF)), // Blue
+      SalesData('Basketball', 20, Color(0xFFFF6347)), // Red
+      SalesData('Badminton', 15, Color(0xFFDDA0DD)), // Purple
+      SalesData('Hockey', 25, Color(0xFF32CD32)), // Green
+      SalesData('Cricket', 15, Color(0xFFFFA500)), // Orange
+    ];
+
+    return SfCircularChart(
+      legend: Legend(isVisible: true, position: LegendPosition.right),
+      series: <CircularSeries>[
+        PieSeries<SalesData, String>(
+          dataSource: chartData,
+          xValueMapper: (SalesData data, _) => data.sport,
+          yValueMapper: (SalesData data, _) => data.sales,
+          pointColorMapper: (SalesData data, _) => data.color,
+          dataLabelSettings: DataLabelSettings(isVisible: true),
+        )
+      ],
+    );
+  }
+}
+
+// Sales Data Model
+class SalesData {
+  SalesData(this.sport, this.sales, this.color);
+  final String sport;
+  final int sales;
+  final Color color;
+}
+
+
+
+
+
+
+Login Page Block Box code =>
+
+
+
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Med-App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(title: 'Med-App Login'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Med-App',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.orange,
+              ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              width: 300,
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'Log-In',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  TextField(
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      hintText: 'enter your user Id .....?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock),
+                      suffixIcon: Icon(Icons.remove_red_eye),
+                      hintText: 'enter your password ...?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle login logic here
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      textStyle: TextStyle(fontSize: 16),
+                    ),
+                    child: Text('login'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+Chatbot 
+
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'VK Medical Chat',
+      home: ChatScreen(),
+    );
+  }
+}
+
+class ChatScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xffe6f2f7),
+      body: Center(
+        child: Container(
+          width: 320,
+          margin: EdgeInsets.only(top: 50),
+          decoration: BoxDecoration(
+            color: Color(0xff121212),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Color(0xff00d3f3),
+                ),
+                child: Center(
+                  child: Text(
+                    'VK MEDICAL',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              // Chat content
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      chatBox('VK Medical staffs', 'Manager: Hi... Everyone', '3.36'),
+                      chatBox('KEERTHI', 'I want your emp_id', '3.30'),
+                      chatBox('Baeinkee', 'Ok, I will added', '3.23'),
+                      chatBox('System_Admin', 'Admin_head: typing...', '2.23'),
+                      chatBox('KeeinBae', 'Ok, Mam', '2.23'),
+                      chatBox('Biller', 'I want today Billing count', '2.00'),
+                    ],
+                  ),
+                ),
+              ),
+              // Footer
+              Container(
+                padding: EdgeInsets.all(10),
+                color: Color(0xff00a3d6),
+                child: Center(
+                  child: FloatingActionButton(
+                    onPressed: () {},
+                    backgroundColor: Color(0xff00d3f3),
+                    child: Icon(Icons.add),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Chat box widget
+  Widget chatBox(String name, String message, String time) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Chat info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff00a3d6),
+                  ),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  message,
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          // Time
+          Text(
+            time,
+            style: TextStyle(
+              color: Color(0xff00a3d6),
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
+

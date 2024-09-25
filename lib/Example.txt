@@ -1,0 +1,277 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+class FormFlights extends StatefulWidget {
+  final VoidCallback backFunc;
+  final onTapFunc;
+  const FormFlights({super.key, required this.backFunc, this.onTapFunc});
+
+  @override
+  FormFlightsState createState() => FormFlightsState();
+}
+
+class FormFlightsState extends State<FormFlights> {
+  List<Map<String, dynamic>>? detiails;
+
+  getData(String from, String to, String date) async {
+    final reqBody = json.encode(
+      {"from": from, "to": to, "date": date},
+    );
+    try {
+      var response = await http.post(
+          Uri.parse('http://localhost:29095/flightdetails'),
+          headers: {'Content-Type': 'application/json'},
+          body: reqBody);
+
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        if (responseData['status'] == 'S' &&
+            responseData['flightdetails'] != null) {
+          print('Status: ${responseData['status']}');
+          print('Msg: ${responseData['msg']}');
+
+          detiails =
+              List<Map<String, dynamic>>.from(responseData['flightdetails']);
+
+          print(detiails);
+          widget.onTapFunc(detiails);
+        } else {
+          print('Error: ${responseData['errmsg']}');
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+
+    if (pickedDate != null && pickedDate != DateTime.now()) {
+      setState(() {
+        _date.text = '${pickedDate.toLocal()}'.split(' ')[0];
+      });
+    }
+  }
+
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  final _from = TextEditingController();
+  final _to = TextEditingController();
+  final _date = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _key,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: TextFormField(
+              controller: _from,
+              style: const TextStyle(
+                fontSize: 24,
+              ),
+              cursorHeight: 33,
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.only(left: 60, top: 24, bottom: 24),
+                prefixIcon: Padding(
+                  padding: EdgeInsets.only(right: 26.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'from',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      SizedBox(height: 8),
+                      Image(
+                        width: 40,
+                        image: AssetImage(
+                            'assets/images/airplane-icon-png-2493.png'),
+                      ),
+                      SizedBox(height: 15),
+                    ],
+                  ),
+                ),
+              ),
+              validator: (value) {
+                final spaceRegex = RegExp(r'^\s|\s$');
+
+                if (value == null || value.isEmpty) {
+                  return "Please enter location";
+                }
+                if (spaceRegex.hasMatch(value)) {
+                  return "Please enter valid location";
+                }
+                return null;
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: TextFormField(
+              controller: _to,
+              cursorHeight: 33,
+              style: const TextStyle(
+                fontSize: 24,
+              ),
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.only(left: 60, top: 24, bottom: 24),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.only(right: 39.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'to',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      const SizedBox(height: 8),
+                      Transform(
+                        transform: Matrix4.identity()..scale(-1.0, 1.0),
+                        alignment: Alignment.center,
+                        child: const Image(
+                          width: 40,
+                          image: AssetImage(
+                              'assets/images/airplane-icon-png-2493.png'),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                    ],
+                  ),
+                ),
+              ),
+              validator: (value) {
+                final spaceRegex = RegExp(r'^\s|\s$');
+
+                if (value == null || value.isEmpty) {
+                  return "Please enter location";
+                }
+                if (spaceRegex.hasMatch(value)) {
+                  return "Please enter valid location";
+                }
+                return null;
+              },
+            ),
+          ),
+	          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: TextFormField(
+              controller: _date,
+              cursorHeight: 33,
+              readOnly: true,
+              onTap: () {
+                _selectDate(context);
+              },
+              style: const TextStyle(
+                fontSize: 24,
+              ),
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.only(left: 60, top: 24, bottom: 24),
+                prefixIcon: Padding(
+                  padding: EdgeInsets.only(right: 30.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Date',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      SizedBox(height: 8),
+                      Icon(Icons.date_range, size: 24),
+                      SizedBox(height: 15),
+                    ],
+                  ),
+                ),
+              ),
+              validator: (value) {
+                final spaceRegex = RegExp(r'^\s|\s$');
+
+                if (value == null || value.isEmpty) {
+                  return "Please choose date";
+                }
+                if (spaceRegex.hasMatch(value)) {
+                  return "Please choose valid date";
+                }
+                return null;
+              },
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(0),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(19, 227, 222, 226),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15)))),
+                    onPressed: () {},
+                    child: const Text('Promo Code',
+                        style: TextStyle(color: Colors.black, fontSize: 25)),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                SizedBox(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 78, 151, 217),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15)))),
+                    onPressed: () async {
+                      var form = _key.currentState;
+                      if (form != null && form.validate()) {
+                        await getData(_from.text, _to.text, _date.text);
+                        print(detiails![0]['from'] +
+                            detiails![0]['to'] +
+                            detiails![0]['date']);
+                        var from = detiails![0]['from'];
+                        var to = detiails![0]['to'];
+                        if ((from == 'Singapore' && to == 'Tokyo') ||
+                            (from == 'India' && to == 'United States')) {
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => Detiails(
+                          //       backFunc: widget.backFunc,
+                          //       availableFlights: detiails ?? [],
+                          //     ),
+                          //   ),
+                          // );
+                        }
+                      }
+                    },
+                    child: const Text(
+                      'Search Flight',
+                      style: TextStyle(color: Colors.white, fontSize: 25),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
